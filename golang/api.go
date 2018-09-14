@@ -5,9 +5,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strings"
-	"github.com/bitly/go-simplejson"
 	"strconv"
+	"strings"
+
+	"github.com/bitly/go-simplejson"
 )
 
 type User struct {
@@ -21,7 +22,7 @@ func NewLibUser(account string, password string) *User {
 	return &User{
 		account:  account,
 		password: password,
-		client: &http.Client{},
+		client:   &http.Client{},
 	}
 }
 
@@ -65,26 +66,11 @@ func (u *User) Login() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp_json, err:= simplejson.NewJson(body)
+	resp_json, err := simplejson.NewJson(body)
 	if err != nil {
 		return nil, err
 	}
 	u.token, err = resp_json.Get("data").Get("token").String()
-	if err != nil {
-		return nil, err
-	}
-	return body, nil
-}
-
-/* CheckToken JSON
-{
-	"status": "success",
-	"data": null,
-	"message": "",
-	"code": "0"
-}*/
-func (u *User) CheckToken() ([]byte, error) {
-	body, err := u.request("GET", CHECK_TOKEN_URL, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -333,7 +319,7 @@ func (u *User) FreeBook(seatID int, startTime, endTime, date string) ([]byte, er
 
 /* Check in JSON
 
-*/
+ */
 func (u *User) CheckIn() ([]byte, error) {
 	body, err := u.request("GET", CHECKIN_URL, nil)
 	if err != nil {
@@ -350,8 +336,23 @@ func (u *User) CheckIn() ([]byte, error) {
 	"code": "0"
 }
 */
-func (u *User) Cancel(reservationID int)  ([]byte, error) {
+func (u *User) Cancel(reservationID int) ([]byte, error) {
 	body, err := u.request("GET", fmt.Sprintf(CANCEL_URL, reservationID), nil)
+	if err != nil {
+		return nil, err
+	}
+	return body, nil
+}
+
+/* Reservations JSON
+{
+	"status": "success",
+	"data": null,
+	"message": "",
+	"code": "0"
+}*/
+func (u *User) RESERVATIONS() ([]byte, error) {
+	body, err := u.request("GET", RESERVATIONS_URL, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -393,4 +394,3 @@ func (u *User) History(page, count string) ([]byte, error) {
 	}
 	return body, nil
 }
-

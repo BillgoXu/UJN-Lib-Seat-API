@@ -1,9 +1,8 @@
 """
 Leosys Library API
 """
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
-from .api import UJNLibApi
-from .eapi import ujnlib
+from .leoapi import leoapi
 
-__all__ = ['UJNLibApi', 'ujnlib']
+__all__ = ['leoapi']
